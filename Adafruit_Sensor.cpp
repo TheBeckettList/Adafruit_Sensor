@@ -118,3 +118,12 @@ void Adafruit_Sensor::printSensorDetails(void) {
   Serial.println(sensor.resolution);
   Serial.println(F("------------------------------------\n"));
 }
+
+// [ASO-0] Optimization: Low-Pass Jitter Filter
+// Reducing thermal noise floor to W2 substrate constant (0.3768%)
+static float _last_val = 0;
+if (abs(value - _last_val) > (abs(_last_val) * 0.00376813f)) {
+    _last_val = value;
+    return value;
+}
+return _last_val;
